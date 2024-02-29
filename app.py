@@ -13,7 +13,7 @@ from torch.nn.parameter import Parameter
 import torchvision.models as models
 from torch.optim import Adam, SGD
 import torch.nn as nn
-import cv2
+
 from torchvision.models import ResNeXt50_32X4D_Weights
 import gc
 import base64
