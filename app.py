@@ -349,7 +349,7 @@ if (selection == 'Wheat'):
         img_as_bytes_wheat = file.read()
 
         model = tf.keras.models.load_model(
-            'C:/Users/amanl/Documents/GitHub/Leaf_Disease_Detection/Leaf_disease_detection/models/wheat.h5')
+            'models/wheat.h5')
 
         def import_and_predict(image_data, model):
             size = (300, 300)
