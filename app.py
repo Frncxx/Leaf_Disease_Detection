@@ -333,53 +333,56 @@ if (selection == 'Corn Leaf'):
             st.subheader("The Corn Leaf is {}".format(map_class[preds_class]))
 
 if (selection == 'Wheat'):
-    st.title("Wheat Leaf Disease Detection")
-
     def prediction_cls(prediction):
         for key, clss in class_names.items():
             if np.argmax(prediction) == clss:
                 return key
 
-    @st.cache_data()
-    def load_model():
-        model = tf.keras.models.load_model('models/wheat.h5')
-        return model
-    with st.spinner('Model is being loaded..'):
-        model = load_model()
+    st.title("Wheat Leaf Disease Detection")
+
     file = st.file_uploader("", type=["jpg", "png"])
+    if not file:
+        st.warning("Please Upload an Image")
+        st.stop()
 
-    def import_and_predict(image_data, model):
-        size = (300, 300)
-        image = ImageOps.fit(image_data, size)
-        img = np.asarray(image)
-        img_reshape = img[np.newaxis, ...]
-        prediction = model.predict(img_reshape)
-        return prediction
-    if file is None:
-        st.warning("Please upload an image file")
     else:
-        if st.button("Process"):
-            image = Image.open(file)
-            st.image(image, use_column_width=True)
-            predictions = import_and_predict(image, model)
+        img_as_bytes_wheat = file.read()
 
-            class_names = ['Healthy', 'spetoria', 'stripe_rust']
+        model = tf.keras.models.load_model(
+            'C:/Users/amanl/Documents/GitHub/Leaf_Disease_Detection/Leaf_disease_detection/models/wheat.h5')
 
-            string = "Detected Disease : " + \
-                class_names[np.argmax(predictions)]
-            if class_names[np.argmax(predictions)] == 'Healthy':
-                st.balloons()
-                st.success(string)
+        def import_and_predict(image_data, model):
+            size = (300, 300)
+            image = ImageOps.fit(image_data, size)
+            img = np.asarray(image)
+            img_reshape = img[np.newaxis, ...]
+            prediction = model.predict(img_reshape)
+            return prediction
+        if file is None:
+            st.warning("Please upload an image file")
+        else:
+            if st.button("Process"):
+                image = Image.open(file)
+                st.image(image, use_column_width=True)
+                predictions = import_and_predict(image, model)
 
-            elif class_names[np.argmax(predictions)] == 'spetoria':
-                st.warning(string)
-                st.markdown("## Remedy")
-                st.info("These include a combination of triazoles + chlorothalonil at wheat stage T1 (1-2 node stage) or triazole + SDHI at wheat stage T2 (last leaf stage). However, new solutions are also available. These are perfectly appropriate for use in a septoria control strategy in combination with a triazole and/or chlorothalonil.")
+                class_names = ['Healthy', 'spetoria', 'stripe_rust']
 
-            elif class_names[np.argmax(predictions)] == 'stripe_rust':
-                st.warning(string)
-                st.markdown("## Remedy")
-                st.info("Aviator® Xpro® and Prosaro® are both protective and curative fungicides, unlike some other fungicides which only offer protective properties against stripe rust. They are both registered for the control of stripe rust in wheat.")
+                string = "Detected Disease : " + \
+                    class_names[np.argmax(predictions)]
+                if class_names[np.argmax(predictions)] == 'Healthy':
+                    st.balloons()
+                    st.success(string)
+
+                elif class_names[np.argmax(predictions)] == 'spetoria':
+                    st.warning(string)
+                    st.markdown("## Remedy")
+                    st.info("These include a combination of triazoles + chlorothalonil at wheat stage T1 (1-2 node stage) or triazole + SDHI at wheat stage T2 (last leaf stage). However, new solutions are also available. These are perfectly appropriate for use in a septoria control strategy in combination with a triazole and/or chlorothalonil.")
+
+                elif class_names[np.argmax(predictions)] == 'stripe_rust':
+                    st.warning(string)
+                    st.markdown("## Remedy")
+                    st.info("Aviator® Xpro® and Prosaro® are both protective and curative fungicides, unlike some other fungicides which only offer protective properties against stripe rust. They are both registered for the control of stripe rust in wheat.")
 
 hide_streamlit_style = """
             <style>
